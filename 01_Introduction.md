@@ -90,7 +90,6 @@ project=web
 phase=alpha
 ```
 
-퀴즈. 현재 선물하기 ansible 설정에서 group으로 변수 지정을 하지 않는 이유는?
 
 ### Groups of Groups, and Group Variables
 
