@@ -51,13 +51,13 @@ $ANSIBLE_HOME/.ansible.cfg
 > Ansible 홈 생성. 앞으로 이 디렉토리를 활용한다.
 
 ```Bash
-$ mkdir /home/jacob/learning_ansible
+$ mkdir learning_ansible
 ```
 
 ### 호스트 등록
 
 ```Bash
-$ cd /home/jacob/learning_ansible/
+$ cd learning_ansible
 $ mkdir -p hosts
 $ vi ./hosts/admin
 ```
@@ -75,9 +75,9 @@ ansible-test-db01
 
 ```bash
 # ping
-$ ansible all -i hosts/admin -m ping -u jacob
+$ ansible all -i hosts/admin -m ping -u deploy
 # setup
-$ ansible all -i hosts/admin -m setup -u jacob
+$ ansible all -i hosts/admin -m setup -u deploy
 ```
 
 ### 자주 사용하는 것들은 ansible.cfg 설정
@@ -93,7 +93,7 @@ $ vi ansible.cfg
 # host_key_checking: ssh 첫 접속 시 yes/no 출력 무시
 host_key_checking = False
 # SSH settings
-remote_user = jacob
+remote_user = deploy
 remote_port = 22
 ```
 
