@@ -1,6 +1,6 @@
 # Introduction
 
-## 개요
+# 개요
 
 - 개발언어 : python
 - 정의  : YAML
@@ -16,7 +16,7 @@
 
 
 
-## 타 대표 제품과의 비교
+# 타 대표 제품과의 비교
 
 ![비교](http://networknuts-web.biz/wp-content/uploads/2015/11/ansible-chef-puppet.png)
 
@@ -44,9 +44,9 @@ $ANSIBLE_HOME/.ansible.cfg
 
 
 
-## Your first commands
+# Your first commands
 
-#### 홈 디렉토리 생성
+### 홈 디렉토리 생성
 
 > Ansible 홈 생성. 앞으로 이 디렉토리를 활용한다.
 
@@ -54,7 +54,7 @@ $ANSIBLE_HOME/.ansible.cfg
 $ mkdir /home/jacob/learning_ansible
 ```
 
-#### 호스트 등록
+### 호스트 등록
 
 ```Bash
 $ cd /home/jacob/learning_ansible/
@@ -71,7 +71,7 @@ ansible-test-web02
 ansible-test-db01
 ```
 
-#### 명령어를 날려보자
+### 명령어를 날려보자
 
 ```bash
 # ping
@@ -80,7 +80,7 @@ $ ansible all -i hosts/admin -m ping -u jacob
 $ ansible all -i hosts/admin -m setup -u jacob
 ```
 
-#### 자주 사용하는 것들은 ansible.cfg 설정
+### 자주 사용하는 것들은 ansible.cfg 설정
 
 > -u jacob 은 매번 적기 귀찮으니 기본으로 설정되도록 ansible.cfg 에 설정한다.
 
@@ -97,7 +97,7 @@ remote_user = jacob
 remote_port = 22
 ```
 
-#### 다시 명령어를 날려보자
+### 다시 명령어를 날려보자
 
 ```Sh
 # ping
@@ -122,9 +122,9 @@ $ ansible all -i hosts/first -l "ansible-test-web0[1-2]" -m ping
 
 
 
-## Inventory
+# Inventory
 
-#### Hosts and Groups
+### Hosts and Groups
 
 일반적인 형태
 
@@ -165,7 +165,7 @@ other2.example.com     ansible_connection=ssh        ansible_user=mdehaan
 > 파라미터 종류들
 > http://docs.ansible.com/ansible/latest/intro_inventory.html#list-of-behavioral-inventory-parameters
 
-#### Host Variables
+### Host Variables
 
 ```java
 [atlanta]
@@ -173,7 +173,7 @@ host1 http_port=80 maxRequestsPerChild=808
 host2 http_port=303 maxRequestsPerChild=909
 ```
 
-#### Grups of Groups, and Group Variables
+### Grups of Groups, and Group Variables
 
 > 이해하기 쉽게 우리나라 지역 한글명으로 설명한다.
 
@@ -208,7 +208,7 @@ escape_pods=2
 
 
 
-## Ansible 실행 및 옵션
+# Ansible 실행 및 옵션
 
 기본적인 형태
 
@@ -227,7 +227,7 @@ ansible all -i hosts/web -l "alpha,sandbox" -m copy -a "src=/etc/hosts dest=/tmp
 
 
 
-## 실행 예
+# 실행 예
 
 ```Bash
 $ ansible atlanta -m copy -a "src=/etc/hosts dest=/tmp/hosts"
