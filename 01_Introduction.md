@@ -46,7 +46,7 @@ $ANSIBLE_HOME/.ansible.cfg
 
 ## Your first commands
 
-##### 홈 디렉토리 생성
+#### 홈 디렉토리 생성
 
 > Ansible 홈 생성. 앞으로 이 디렉토리를 활용한다.
 
