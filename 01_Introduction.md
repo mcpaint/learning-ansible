@@ -99,7 +99,7 @@ remote_port = 22
 
 ### 다시 명령어를 날려보자
 
-```Sh
+``` sh
 # ping
 $ ansible all -i hosts/first -m ping
 
@@ -229,7 +229,7 @@ ansible all -i hosts/web -l "alpha,sandbox" -m copy -a "src=/etc/hosts dest=/tmp
 
 ## 실행 예
 
-```Sh
+``` sh
 $ ansible atlanta -m copy -a "src=/etc/hosts dest=/tmp/hosts"
 
 # File
