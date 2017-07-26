@@ -14,6 +14,10 @@
 - Documentation
   - http://docs.ansible.com/
 
+## 비교
+
+![비교](http://networknuts-web.biz/wp-content/uploads/2015/11/ansible-chef-puppet.png)
+
 ## 설치
 
 ```sh
@@ -32,11 +36,93 @@ $ANSIBLE_HOME/ansible.cfg
 $ANSIBLE_HOME/.ansible.cfg
 ```
 
+
+
+
+
+## Your first commands
+
+### 홈 디렉토리 생성
+
+> Ansible 홈 생성. 앞으로 이 디렉토리를 활용한다.
+
+```Bash
+$ mkdir /home/jacob/learning_ansible
+```
+
+### 호스트 등록
+
+```Bash
+$ cd /home/jacob/learning_ansible/
+$ mkdir -p hosts
+$ vi ./hosts/admin
+```
+
+```
+[web]
+ansible-test-web01
+ansible-test-web02
+
+[db]
+ansible-test-db01
+```
+
+### 명령어를 날려보자
+
+```bash
+# ping
+$ ansible all -i hosts/admin -m ping -u jacob
+# setup
+$ ansible all -i hosts/admin -m setup -u jacob
+```
+
+### 자주 사용하는 것들은 ansible.cfg 설정
+
+> -u jacob 은 매번 적기 귀찮으니 기본으로 설정되도록 ansible.cfg 에 설정한다.
+
+```bash
+$ vi ansible.cfg
+```
+
+```Bash
+[defaults]
+# host_key_checking: ssh 첫 접속 시 yes/no 출력 무시
+host_key_checking = False
+# SSH settings
+remote_user = jacob
+remote_port = 22
+```
+
+### 다시 명령어를 날려보자
+
+```Sh
+# ping
+$ ansible all -i hosts/first -m ping
+
+# setup
+$ ansible all -i hosts/first -m setup
+
+# web 서버만 ping
+$ ansible all -i hosts/first -l web -m ping
+
+# ansible-test-web01 서버만 ping 체크
+$ ansible all -i hosts/first -l "ansible-test-web01" -m ping
+
+# ansible-test-web01,02 2대 서버만 ping 체크
+$ ansible all -i hosts/first -l "ansible-test-web01,ansible-test-web02" -m ping
+$ ansible all -i hosts/first -l "ansible-test-web01 ansible-test-web02" -m ping
+$ ansible all -i hosts/first -l "ansible-test-web0[1-2]" -m ping
+```
+
+
+
+
+
 ## Inventory
 
 ### Hosts and Groups
 
-기본 설정
+일반적인 형태
 
 ```
 mail.example.com
@@ -51,73 +137,74 @@ two.example.com
 three.example.com
 ```
 
-SSH 접속 관련 파라미터 설정  
-http://docs.ansible.com/ansible/intro_inventory.html#list-of-behavioral-inventory-parameters
+별칭 지정 및 터널을 통해 연결 하고자 할 경우
 
-```
-jumper ansible_port=5555 ansible_host=192.0.2.50
+```javascript
+jumper ansible_port = 5555 ansible_host = 192.0.2.50
 ```
 
-범위 설정
+그밖의 여러가지 형태
 
-```
+```java
 [webservers]
 www[01:50].example.com
 
 [databases]
 db-[a:f].example.com
+  
+[targets]
+localhost              ansible_connection=local
+other1.example.com     ansible_connection=ssh        ansible_user=mpdehaan
+other2.example.com     ansible_connection=ssh        ansible_user=mdehaan
 ```
+
+> 파라미터 종류들
+> http://docs.ansible.com/ansible/latest/intro_inventory.html#list-of-behavioral-inventory-parameters
 
 ### Host Variables
 
-```
-[real]
-aaa.example.com           project=web phase=real
-bbb.example.com           project=web phase=real
-ccc.example.com           project=web phase=real
-```
-
-### Group Variables
-
-```
-[real]
-aaa.example.com
-bbb.example.com
-ccc.example.com
-
-[real:vars]
-project=web
-phase=alpha
+```java
+[atlanta]
+host1 http_port=80 maxRequestsPerChild=808
+host2 http_port=303 maxRequestsPerChild=909
 ```
 
+### Grups of Groups, and Group Variables
 
-### Groups of Groups, and Group Variables
-
-키워드  
-***:children***, ***:vars***
+> 이해하기 쉽게 우리나라 지역 한글명으로 설명한다.
 
 ```
-[web-1]
-a1.example.com
-a2.example.com
-a3.example.com
+[전라남도]
+목포
+순천
 
-[web-2]
-b1.example.com
-b2.example.com
-b3.example.com
+[전라북도]
+전주
+정읍
 
-[result]
-c1.example.com
-c2.example.com
+[전라도:children]
+전라남도
+전라북도
 
-[real:children]
-web-1
-web-2
-result
+[전라도:vars]
+some_server=foo.southeast.example.com
+halon_system_timeout=30
+self_destruct_countdown=60
+escape_pods=2
+
+...(중략)...
+
+[대한민국:children]
+전라도
+경상도
+경기도
 ```
 
-## 실행
+
+
+
+
+## Ansible 실행 및 옵션
 
 기본적인 형태
 
@@ -132,13 +219,35 @@ ansible all -i hosts/web -l "alpha,sandbox" -m copy -a "src=/etc/hosts dest=/tmp
 - -f : FORKS. 병렬 처리할 프로세스 개수 (default : 5)
 - -e : EXTRA_VARS. 추가적으로 변수 사용 시
 
-사용 예
 
-```shell
-# webapp real 서버군에서 ERROR 로그 검색
-ansible all -i hosts/webapp -l real -m shell -a "grep ERROR /home/ansible/logs/webapp/application.log" -f 10
+
+
+
+## 실행 예
+
+```Bash
+$ ansible atlanta -m copy -a "src=/etc/hosts dest=/tmp/hosts"
+
+# File
+$ ansible webservers -m file -a "dest=/srv/foo/a.txt mode=600"
+$ ansible webservers -m file -a "dest=/srv/foo/b.txt mode=600 owner=mdehaan group=mdehaan"
+$ ansible webservers -m file -a "dest=/path/to/c mode=755 owner=mdehaan group=mdehaan state=directory"
+$ ansible webservers -m file -a "dest=/path/to/c state=absent"
+
+# Yum
+$ ansible webservers -m yum -a "name=acme state=present"
+$ ansible webservers -m yum -a "name=acme-1.5 state=present"
+$ ansible webservers -m yum -a "name=acme state=latest"
+$ ansible webservers -m yum -a "name=acme state=absent"
+
+# Users and groups
+$ ansible all -m user -a "name=foo password=<crypted password here>"
+$ ansible all -m user -a "name=foo state=absent"
+
+# Deploying From Source Control
+$ ansible webservers -m git -a "repo=git://foo.example.org/repo.git dest=/srv/myapp version=HEAD"
+
+# Managing services
+$ ansible webservers -m service -a "name=httpd state=started"
 ```
 
-## 참고자료
-
-http://deview.kr/2014/session?seq=15
