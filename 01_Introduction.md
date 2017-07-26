@@ -1,6 +1,6 @@
 # Introduction
 
-# 개요
+## 개요
 
 - 개발언어 : python
 - 정의  : YAML
@@ -16,7 +16,7 @@
 
 
 
-# 타 대표 제품과의 비교
+## 타 대표 제품과의 비교
 
 ![비교](http://networknuts-web.biz/wp-content/uploads/2015/11/ansible-chef-puppet.png)
 
@@ -44,7 +44,7 @@ $ANSIBLE_HOME/.ansible.cfg
 
 
 
-# Your first commands
+## Your first commands
 
 ### 홈 디렉토리 생성
 
@@ -122,7 +122,7 @@ $ ansible all -i hosts/first -l "ansible-test-web0[1-2]" -m ping
 
 
 
-# Inventory
+## Inventory
 
 ### Hosts and Groups
 
@@ -208,7 +208,7 @@ escape_pods=2
 
 
 
-# Ansible 실행 및 옵션
+## Ansible 실행 및 옵션
 
 기본적인 형태
 
@@ -227,7 +227,7 @@ ansible all -i hosts/web -l "alpha,sandbox" -m copy -a "src=/etc/hosts dest=/tmp
 
 
 
-# 실행 예
+## 실행 예
 
 ```Bash
 $ ansible atlanta -m copy -a "src=/etc/hosts dest=/tmp/hosts"
