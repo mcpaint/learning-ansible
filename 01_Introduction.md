@@ -229,7 +229,7 @@ ansible all -i hosts/web -l "alpha,sandbox" -m copy -a "src=/etc/hosts dest=/tmp
 
 ## 실행 예
 
-```Bash
+```Sh
 $ ansible atlanta -m copy -a "src=/etc/hosts dest=/tmp/hosts"
 
 # File
