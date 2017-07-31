@@ -1,10 +1,21 @@
 # Introduction
 
-## 개요
+## Ansible 이란?
+
+### 빠르게 배워서 편하고 쉽게 많은 서버를 관리
+
+- 시스템 환경 설정 및 어플리케이션 배포 자동화 플랫폼
+- 에이전트 필요 없음. SSH 연결만 가능하면 됨
+- 학습하기 쉬움
+
+
+
+## 환경
 
 - 개발언어 : python
-- 정의  : YAML
-- Agent/SSH여부 : SSH
+- 설정 문법  : YAML
+- Agent 필요 없음
+- SSH
 - 통신방법 : json
 - 멱등성 보장
   - 여러 번 적용해도 결과는 바뀌지 않는다.
@@ -13,6 +24,8 @@
     - shell, command, file
 - Documentation
   - http://docs.ansible.com/
+
+
 
 
 
