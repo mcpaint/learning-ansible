@@ -18,6 +18,21 @@ remote_port = 22
 roles_path = ./roles
 ```
 
+## group_vars
+
+공통 변수 모음 파일
+
+> group_vars/common.yml
+
+```yaml
+user_id: jacob
+nginx:
+  version: nginx-1.12.1
+  download_url: https://nginx.org/download/nginx-1.12.1.tar.gz
+```
+
+
+
 ### 디렉토리 구조
 
 > mkdir -p group_vars hosts playbooks roles
@@ -29,8 +44,6 @@ roles_path = ./roles
 - roles
 ansible.cfg
 ```
-
-
 
 
 
@@ -48,7 +61,10 @@ playbook 으로 변환
 
 ```yaml
 ---
-- hosts: all
+- name: test ping
+  vars_files:
+    - ../group_vars/common.yml
+  hosts: all
   tasks:
     - name: test connection
       ping:
@@ -75,7 +91,10 @@ touch는 file 모듈을 활용하면 된다.  File 모듈에 대해 자세히 �
 
 ```Yaml
 ---
-- hosts: all
+- name: test ping
+  vars_files:
+    - ../group_vars/common.yml
+  hosts: all
   tasks:
     - name: make directory
       file:
@@ -95,7 +114,10 @@ touch는 file 모듈을 활용하면 된다.  File 모듈에 대해 자세히 �
 
 ```yaml
 ---
-- hosts: all
+- name: test ping
+  vars_files:
+    - ../group_vars/common.yml
+  hosts: all
   vars:
     touch_files_path: /home/deploy/touch_files
     id: jacob
@@ -117,7 +139,10 @@ touch는 file 모듈을 활용하면 된다.  File 모듈에 대해 자세히 �
 
 ```yaml
 ---
-- hosts: all
+- name: test ping
+  vars_files:
+    - ../group_vars/common.yml
+  hosts: all
   vars:
     touch_files_path: /home/deploy/touch_files
     id: jacob
@@ -127,7 +152,7 @@ touch는 file 모듈을 활용하면 된다.  File 모듈에 대해 자세히 �
         path: "{{touch_files_path}}"
         state: directory
         
-    - name: touch file
+    - name: touch files
       file:
         path: "{{touch_files_path}}/{{item}}.txt"
         state: touch
@@ -141,7 +166,10 @@ or
 
 ```yaml
 ---
-- hosts: all
+- name: test ping
+  vars_files:
+    - ../group_vars/common.yml
+  hosts: all
   vars:
     touch_files_path: /home/deploy/touch_files
     id: jacob
@@ -151,7 +179,7 @@ or
         path: "{{touch_files_path}}"
         state: directory
         
-    - name: touch file
+    - name: touch files
       file:
         path: "{{touch_files_path}}/{{item.id}}{{item.num}}.txt"
         state: touch
@@ -171,7 +199,10 @@ CentOS 이며 버전이 7일 경우에만 실행되게 해보자
 
 ```Yaml
 ---
-- hosts: all
+- name: test ping
+  vars_files:
+    - ../group_vars/common.yml
+  hosts: all
   vars:
     touch_files_path: /home/deploy/touch_files
     id: jacob
@@ -201,7 +232,10 @@ CentOS 이며 버전이 7일 경우에만 실행되게 해보자
 
 ```Yaml
 ---
-- hosts: all
+- name: test ping
+  vars_files:
+    - ../group_vars/common.yml
+  hosts: all
   vars:
     touch_files_path: /home/deploy/touch_files
     id: jacob
@@ -230,12 +264,10 @@ CentOS 이며 버전이 7일 경우에만 실행되게 해보자
 
 
 
-
-
 ## Ansible의 핵심 Role
 
 - 중복 소스 제거
-- 자주 사용하는 것들은 함수로
+- 자주 사용하는 것들은 Role 로 만듬
 - 미리 레시피를 만들어 놓고 호출만 하면 끝!
 
 ### 프로젝트 구조 예
@@ -322,7 +354,10 @@ $ mkdir -p roles/touch_files/tasks/main.yml
 
 ```yaml
 ---
-- hosts: all
+- name: test ping
+  vars_files:
+    - ../group_vars/common.yml
+  hosts: all
   vars:
     touch_files_path: /home/deploy/touch_files
     id: jacob
@@ -333,8 +368,10 @@ $ mkdir -p roles/touch_files/tasks/main.yml
 or
 
 ```yaml
----
-- hosts: all
+- name: test ping
+  vars_files:
+    - ../group_vars/common.yml
+  hosts: all
   roles:
     - {role: touch_files, touch_files_path: /home/deploy/touch_files, id: jacob}
 ```
@@ -442,6 +479,134 @@ ansible-test-db01
 ```Sh
 $ ansible-playbook site.yml --limit webservers
 $ ansible-playbook webservers.yml
+```
+
+
+
+## sudo
+
+sudo 권한이 필요할 경우 `sudo: true` 옵션을 주면 된다.
+
+```yaml
+- name: copy foo.conf
+  sudo: true
+  copy:
+    src: /home/deploy/foo.conf
+    dest: /etc/foo.conf
+    
+```
+
+
+
+## Templates 활용
+
+http://docs.ansible.com/ansible/latest/template_module.html
+
+템플릿에 ***{{variables}}*** 를 설정할 수 있다.
+
+디렉토리 생성
+
+```Sh
+$ mkdir -p roles/test_templates/tasks
+$ mkdir tasks templates vars
+```
+
+> roles/test_templates/vars/main.yml
+
+```yaml
+templates_dir_path: /home/deploy/templates_test
+user_id: jacob
+```
+
+> roles/test_templates/templates/test.txt
+
+```
+- user_id: {{user_id}}
+- templates_dir_path: {{templates_dir_path}}
+- hostname: {{inventory_hostname}}
+```
+
+> roles/test_templates/tasks/main.yml
+
+```yaml
+---
+- name: make directory
+  file:
+    path: "{{templates_dir_path}}"
+    state: directory
+    
+- name: copy test.text
+  template:
+    src: test.txt
+    dest: "{{templates_dir_path}}/{{user_id}}.txt"
+```
+
+> playbooks/test_templates.yml
+
+```Yaml
+---
+- name: test ping
+  vars_files:
+    - ../group_vars/common.yml
+  hosts: all
+  roles:
+    - test_templates
+```
+
+> 실행
+
+```
+$ ansible-playbook playbooks/test_templates.yml -i hosts/admin -l alpha
+```
+
+### templates 디렉토리 위치 변경
+
+각 `role` 마다 `templates` 안에 템플릿들을 관리하는 것 보다 한 디렉토리 안에서 관리하는게 편할것이다.  
+이럴 경우 아래와 같이 설정하면 된다.
+
+> templates 디렉토리 생성 및 파일 복사
+
+```sh
+$ mkdir templates
+$ cp roles/test_templates/templates/test.txt templates/
+```
+
+> roles/test_templates/tasks/main.yml
+
+```
+---
+- name: make directory
+  file:
+    path: "{{templates_dir_path}}"
+    state: directory
+    
+- name: copy test.text
+  template:
+    src: ../../../templates/test.txt
+    dest: "{{templates_dir_path}}/{{user_id}}.txt"
+```
+
+group_vars 에 등록하면 더 유용. 이렇게 해보자
+
+> group_vars/common.yml 에 추가
+
+```Yams
+templates_path: ../../../templates
+```
+
+> roles/test_templates/tasks/main.yml
+
+```yaml
+---
+- name: make directory
+  file:
+    path: "{{templates_dir_path}}"
+    state: directory
+    
+- name: copy test.text
+  template:
+    src: "{{templates_path}}/test.txt"
+    dest: "{{templates_dir_path}}/{{user_id}}.txt"
 ```
 
 

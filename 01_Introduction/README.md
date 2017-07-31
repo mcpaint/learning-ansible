@@ -5,8 +5,8 @@
 ### 빠르게 배워서 편하고 쉽게 많은 서버를 관리
 
 - 시스템 환경 설정 및 어플리케이션 배포 자동화 플랫폼
-- 에이전트 필요 없음. SSH 연결만 가능하면 됨
 - 학습하기 쉬움
+- 에이전트 필요 없이 관리 서버에 Ansible만 설치되면 끝
 
 
 
@@ -69,7 +69,7 @@ $ mkdir learning_ansible
 
 ### 호스트 등록
 
-```Bash
+```Sh
 $ cd learning_ansible
 $ mkdir -p hosts
 $ vi ./hosts/admin
@@ -86,7 +86,7 @@ ansible-test-db01
 
 ### 명령어를 날려보자
 
-```bash
+```Sh
 # ping
 $ ansible all -i hosts/admin -m ping -u deploy
 # setup
@@ -95,13 +95,13 @@ $ ansible all -i hosts/admin -m setup -u deploy
 
 ### 자주 사용하는 것들은 ansible.cfg 설정
 
-> -u jacob 은 매번 적기 귀찮으니 기본으로 설정되도록 ansible.cfg 에 설정한다.
+-u deploy 은 매번 적기 귀찮으니 기본으로 설정되도록 ansible.cfg 에 설정한다.
 
 ```bash
 $ vi ansible.cfg
 ```
 
-```Bash
+```Sh
 [defaults]
 # host_key_checking: ssh 첫 접속 시 yes/no 출력 무시
 host_key_checking = False
@@ -188,7 +188,7 @@ host2 http_port=303 maxRequestsPerChild=909
 
 ### Grups of Groups, and Group Variables
 
-> 이해하기 쉽게 우리나라 지역 한글명으로 설명한다.
+이해하기 쉽게 우리나라 지역 한글명으로 설명한다.
 
 ```
 [전라남도]
