@@ -1,5 +1,49 @@
 # Playbooks
 
+## 문법의 변화
+
+특정 버전에서 부터 문법이 달라졌다.
+
+file 모듈을 예로 들자면
+
+> 변경 전
+
+```yaml
+- file: path=/etc/foo.conf owner=foo group=foo mode=0644
+```
+
+> 변경 후
+
+```Yaml
+- file:
+    path: /etc/foo.conf
+    owner: foo
+    group: foo
+    mode: 0644
+```
+
+### 기타
+
+- `YAML` 파일 작성 시 들여쓰기는 `TAB` 이 아닌 `Space`로 할 것
+
+- {{변수}} 가 있는 곳은 " "로 감쌀 것
+
+  - ```yaml
+    - file:
+        path: "/etc/{{filename}}.conf"
+        owner: foo
+        group: foo
+        mode: 0644
+    ```
+
+
+
+
+
+
+
+
+
 ## 미리 준비할 것들
 
 ### ansible.cfg
@@ -18,6 +62,12 @@ remote_port = 22
 roles_path = ./roles
 ```
 
+
+
+
+
+
+
 ## group_vars
 
 공통 변수 모음 파일
@@ -33,7 +83,9 @@ nginx:
 
 
 
-### 디렉토리 구조
+
+
+## 디렉토리 구조
 
 > mkdir -p group_vars hosts playbooks roles
 
@@ -44,6 +96,8 @@ nginx:
 - roles
 ansible.cfg
 ```
+
+
 
 
 

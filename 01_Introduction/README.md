@@ -1,29 +1,56 @@
 # Introduction
 
+## 왜 Ansible 인가?
+
+- 우리팀 전체 서버의 PING을 체크하고 싶다.
+- 우리팀 전체 서버의 OS 버전을 알고 싶다.
+- A라는 프로젝트에 10대의 신규 서버가 추가 투입되어 서버 셋팅이 필요하다.
+
+위와 같은 니즈가 있을 경우 어떻게 처리할 것인가?
+
+이럴 때 사용하는게 Ansible 이다.
+
+
+
 ## Ansible 이란?
 
-### 빠르게 배워서 편하고 쉽게 많은 서버를 관리
+한문장으로 표현하자면..
+
+### "빠르게 배워서 편하고 쉽게 많은 서버를 관리"
 
 - 시스템 환경 설정 및 어플리케이션 배포 자동화 플랫폼
 - 학습하기 쉬움
-- 에이전트 필요 없이 관리 서버에 Ansible만 설치되면 끝
+- SSH 연결과 에이전트 필요 없이 관리 서버에 Ansible만 설치되면 끝
+
+
 
 
 
 ## 환경
 
-- 개발언어 : python
-- 설정 문법  : YAML
+- 개발언어 : `python`
+
+- 설정 문법  : `YAML`
+
 - Agent 필요 없음
+
 - SSH
-- 통신방법 : json
+
+- 통신방법 : `json`
+
 - 멱등성 보장
+
+  - > **멱등법칙**(冪等法則) 또는 **멱등성**(冪等性, [영어](https://ko.wikipedia.org/wiki/%EC%98%81%EC%96%B4): idempotence)은 [수학](https://ko.wikipedia.org/wiki/%EC%88%98%ED%95%99)이나 [전산학](https://ko.wikipedia.org/wiki/%EC%A0%84%EC%82%B0%ED%95%99)에서 연산의 한 성질을 나타내는 것으로, 연산을 여러 번 적용하더라도 결과가 달라지지 않는 성질을 의미한다.  
+    > (위키백과)[https://ko.wikipedia.org/wiki/%EB%A9%B1%EB%93%B1%EB%B2%95%EC%B9%99]
+
   - 여러 번 적용해도 결과는 바뀌지 않는다.
   - Ansible 모듈 대부분 멱등성을 제공
   - 멱등성을 제공하지 않는 모듈
-    - shell, command, file
+    - `shell`, `command`, `file`
+
 - Documentation
   - http://docs.ansible.com/
+  - CLI에서는 `$ ansible-doc [Module]`
 
 
 
