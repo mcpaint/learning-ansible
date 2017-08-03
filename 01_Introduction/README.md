@@ -136,7 +136,7 @@ $ ansible all -i hosts/admin -m ping -u deploy -f 30
 # setup
 $ ansible all -i hosts/admin -m setup -u deploy -f 30
 # setup with filter
-$ ansible all -i hosts/admin -m setup -a "filter=ansible_distribution_*" -f 30
+$ ansible all -i hosts/admin -m setup -a "filter=ansible_distribution_*" -u deploy -f 30
 ```
 
 ### 자주 사용하는 것들은 ansible.cfg 설정

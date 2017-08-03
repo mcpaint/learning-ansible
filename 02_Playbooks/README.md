@@ -43,19 +43,16 @@ file 모듈을 예로 들자면
 ### 기타
 
 - `YAML` 파일 작성 시 들여쓰기는 `TAB` 이 아닌 `Space`로 할 것
-
 - {{변수}} 가 있는 곳은 " "로 감쌀 것
 
-  - ```yaml
-    - file:
-        path: "/etc/{{filename}}.conf"
-        owner: foo
-        group: foo
-        mode: 0644
-    ```
 
-
-
+```Yaml
+- file:
+    path: "/etc/{{filename}}.conf"
+    owner: foo
+    group: foo
+    mode: 0644
+```
 
 
 
@@ -180,12 +177,20 @@ touch는 file 모듈을 활용하면 된다.  File 모듈에 대해 자세히 �
         state: touch
 ```
 
+> 실행
+
+```sh
+$ ansible-playbook playbooks/touch_files.yml -i hosts/admin
+```
+
 
 
 ### (실습) 변수 활용 (vars, {{변수명}})
 
 위에 설정을 보면 `/home/deploy/touch_files` 이 중복된다. 변수를 활용하면 깔끔하겠죠?
 변수를 사용할 때는 `{{variables}}` 형태로 사용하면 된다.
+
+> vi playbook/touch_files.yml
 
 ```yaml
 ---
@@ -208,11 +213,19 @@ touch는 file 모듈을 활용하면 된다.  File 모듈에 대해 자세히 �
         state: touch
 ```
 
+> 실행
+
+```sh
+$ ansible-playbook playbooks/touch_files.yml -i hosts/admin
+```
+
 
 
 ### (실습) 루프를 이용하여 여러 파일들을 생성해 보자 (item, with_items)
 
-`{본인이름}1~3.txt` 을 생성해 보자
+`{본인이름}[1-3].txt` 을 생성해 보자
+
+> vi playbook/touch_files.yml
 
 ```yaml
 ---
@@ -239,7 +252,17 @@ touch는 file 모듈을 활용하면 된다.  File 모듈에 대해 자세히 �
         - "{{id}}3"
 ```
 
+> 실행
+
+```sh
+$ ansible-playbook playbooks/touch_files.yml -i hosts/admin
+```
+
+
+
 or
+
+> vi playbook/touch_files.yml
 
 ```yaml
 ---
@@ -266,6 +289,14 @@ or
         - {id: "{{id}}", num: 3}
 ```
 
+> 실행
+
+```sh
+$ ansible-playbook playbooks/touch_files.yml -i hosts/admin
+```
+
+
+
 
 
 ### (실습) 조건문도 설정해볼까 (when)
@@ -273,6 +304,8 @@ or
 > http://docs.ansible.com/ansible/latest/playbooks_conditionals.html 
 
 CentOS 이며 버전이 7일 경우에만 실행되게 해보자
+
+> vi playbook/touch_files.yml
 
 ```Yaml
 ---
@@ -303,11 +336,21 @@ CentOS 이며 버전이 7일 경우에만 실행되게 해보자
         #- (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
 ```
 
+> 실행
+
+```sh
+$ ansible-playbook playbooks/touch_files.yml -i hosts/admin
+```
+
 
 
 ## (실습) 파일이 존재하면 실행하고 없으면 실행되게 해보자 (stat, register, when)
 
 > Stat 모듈 : http://docs.ansible.com/ansible/latest/stat_module.html
+
+
+
+> vi playbook/touch_files.yml
 
 ```Yaml
 ---
@@ -339,6 +382,12 @@ CentOS 이며 버전이 7일 경우에만 실행되게 해보자
       when:
         - not result.stat.exists
         #- result.stat.exists == false
+```
+
+>실행
+
+```sh
+$ ansible-playbook playbooks/touch_files.yml -i hosts/admin
 ```
 
 
