@@ -1,8 +1,26 @@
 # Playbooks
 
+## Playbook 이란?
+
+> Playbooks - play - tasks 구조 #1
+
+![Playbooks 구조](../images/ansible_playbook.png)
+
+> Playbooks - play - Roles 구조
+
+![](../images/playbook.png)
+
+> Playbooks - Hosts - Roles 관계
+
+![](../images/jacob_ansible.png)
+
+
+
+
+
 ## 문법의 변화
 
-특정 버전에서 부터 문법이 달라졌다.
+특정 버전에서 부터 문법이 달라졌다. 두개 모두 사용이 가능하다.
 
 file 모듈을 예로 들자면
 
@@ -53,9 +71,8 @@ http://docs.ansible.com/ansible/intro_configuration.html
 
 ```properties
 [defaults]
+forks = 50 
 host_key_checking = False
-
-# SSH settings
 remote_user = deploy
 remote_port = 22
 
@@ -66,11 +83,9 @@ roles_path = ./roles
 
 
 
+## 공통 변수
 
-
-## group_vars
-
-공통 변수 모음 파일
+공통 변수를 파일로 관리하여 각 Playbook 에서 사용할 수 있다.
 
 > group_vars/common.yml
 
@@ -78,7 +93,7 @@ roles_path = ./roles
 user_id: jacob
 nginx:
   version: nginx-1.12.1
-  download_url: https://nginx.org/download/nginx-1.12.1.tar.gz
+  download_url: https://nginx.org/download/{{nginx.version}}.tar.gz
 ```
 
 
@@ -87,7 +102,11 @@ nginx:
 
 ## 디렉토리 구조
 
-> mkdir -p group_vars hosts playbooks roles
+> 디렉토리 생성
+
+```Sh
+$ mkdir -p group_vars hosts playbooks roles
+```
 
 ```
 - group_vars
@@ -106,7 +125,7 @@ ansible.cfg
 > playbook을 사용하지 않는 명령어
 
 ```Sh
-$ ansible all -i hosts/admin -m ping -u deploy
+$ ansible all -i hosts/admin -m ping
 ```
 
 playbook 으로 변환
@@ -134,9 +153,9 @@ $ ansible-playbook playbooks/basic.yml -i hosts/admin -l alpha
 
 
 
-## 기본 설정 - 좀 더 테스트 해보자
+## (실습) 기본 설정 - 좀 더 테스트 해보자
 
-각 서버에 접속하여 `/home/deploy` 에 `{본인이름}.txt touch` 하는 것을 구현해 보자  
+각 서버에 접속하여 `/home/deploy` 에 `touch {본인이름}.txt` 하는 것을 구현해 보자  
 touch는 file 모듈을 활용하면 된다.  File 모듈에 대해 자세히 보려면 [여기][1]를 참고하라.
 
 [1]: http://docs.ansible.com/ansible/latest/file_module.html
@@ -161,9 +180,11 @@ touch는 file 모듈을 활용하면 된다.  File 모듈에 대해 자세히 �
         state: touch
 ```
 
-### 변수 활용 (vars, {{변수명}})
 
-위에 설정을 보면 `/home/deploy/touch_files` 이 중복된다. 변수를 활용하면 깔끔하겠죠?  
+
+### (실습) 변수 활용 (vars, {{변수명}})
+
+위에 설정을 보면 `/home/deploy/touch_files` 이 중복된다. 변수를 활용하면 깔끔하겠죠?
 변수를 사용할 때는 `{{variables}}` 형태로 사용하면 된다.
 
 ```yaml
@@ -187,7 +208,9 @@ touch는 file 모듈을 활용하면 된다.  File 모듈에 대해 자세히 �
         state: touch
 ```
 
-### 루프를 이용하여 여러 파일들을 생성해 보자 (item, with_items)
+
+
+### (실습) 루프를 이용하여 여러 파일들을 생성해 보자 (item, with_items)
 
 `{본인이름}1~3.txt` 을 생성해 보자
 
@@ -245,7 +268,7 @@ or
 
 
 
-### 조건문도 설정해볼까 (when)
+### (실습) 조건문도 설정해볼까 (when)
 
 > http://docs.ansible.com/ansible/latest/playbooks_conditionals.html 
 
@@ -280,7 +303,9 @@ CentOS 이며 버전이 7일 경우에만 실행되게 해보자
         #- (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
 ```
 
-파일이 존재하면 실행하고 없으면 실행되게 해보자
+
+
+## (실습) 파일이 존재하면 실행하고 없으면 실행되게 해보자 (stat, register, when)
 
 > Stat 모듈 : http://docs.ansible.com/ansible/latest/stat_module.html
 
@@ -369,9 +394,11 @@ roles/
     - {role: touch_files, touch_files_path: '/home/deploy/touch_files', when: "ansible_os_family == 'RedHat'"}
 ```
 
-### Role 생성
 
-위에서 진행했던 touch_files.yml에 있던 tasks를 role로 빼보자
+
+### (실습) Role 생성
+
+위에서 진행했던 playbook인 touch_files.yml에 있던 tasks를 role로 빼보자
 
 > main.yml 은 index.html 같은 개념
 
@@ -438,11 +465,11 @@ $ ansible-playbook playbooks/touch_files_role.yml -i hosts/admin -l alpha
 
 
 
-## Variables
+## (팁) Variables
 
 ***{{variables}}*** 형태로 사용
 
-### 변수를 사용하는 방법들
+### 변수 사용은 여러가지 방법이 있다
 
 #### 공통 파일로 관리
 
@@ -508,7 +535,7 @@ ansible-test-db01
 
 
 
-## Playbook 안에 Playbook
+## (팁) Playbook 안에 Playbook
 
 > playbook/site.yml
 
@@ -537,7 +564,7 @@ $ ansible-playbook webservers.yml
 
 
 
-## sudo
+## (팁) sudo
 
 sudo 권한이 필요할 경우 `sudo: true` 옵션을 주면 된다.
 
@@ -552,11 +579,13 @@ sudo 권한이 필요할 경우 `sudo: true` 옵션을 주면 된다.
 
 
 
-## Templates 활용
+## (실습) Templates 활용
 
 http://docs.ansible.com/ansible/latest/template_module.html
 
 템플릿에 ***{{variables}}*** 를 설정할 수 있다.
+
+### Template 을 이용하여 파일을 복사 해보자
 
 디렉토리 생성
 
@@ -613,6 +642,10 @@ user_id: jacob
 $ ansible-playbook playbooks/test_templates.yml -i hosts/admin -l alpha
 ```
 
+
+
+
+
 ### templates 디렉토리 위치 변경
 
 각 `role` 마다 `templates` 안에 템플릿들을 관리하는 것 보다 한 디렉토리 안에서 관리하는게 편할것이다.  
@@ -627,7 +660,7 @@ $ cp roles/test_templates/templates/test.txt templates/
 
 > roles/test_templates/tasks/main.yml
 
-```
+```Yaml
 ---
 - name: make directory
   file:
@@ -644,7 +677,7 @@ group_vars 에 등록하면 더 유용. 이렇게 해보자
 
 > group_vars/common.yml 에 추가
 
-```Yams
+```Yaml
 templates_path: ../../../templates
 ```
 
