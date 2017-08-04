@@ -747,6 +747,23 @@ templates_path: ../../../templates
 
 
 
+## (팁) SSH authorized key
+
+현재까지 로컬에서 테스트를 했습니다.  
+그러나 서버 to 서버 형태로 가면 SSH 인증키 등록 작업을 선행되어야 합니다.  
+SSH 인증키에 대한 이해 : https://opentutorials.org/module/432/3742
+
+> 인증키 등록 예제
+
+```yaml
+# 로컬 서버의 ~/.ssh/id_rsa.pub의 내용을 접근 대상 서버의 ~/.ssh/authorized_keys 에 추가
+- authorized_key:
+    user: {{default_user}}
+    key: "{{ lookup('file', '/home/{{default_user}}/.ssh/id_rsa.pub') }}"
+```
+
+
+
 
 
 ## 참고 사이트
