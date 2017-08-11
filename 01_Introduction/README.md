@@ -130,6 +130,22 @@ ansible-test-db01
 
 ### 명령어를 날려보자
 
+```sh
+$ ansible all -i hosts/admin -m ping -u deploy -f 30
+```
+
+첫 접속이라면 yes/no 구문이 나오면서 진행이 안될것이다. 
+Host Key 체크하지 않도록 설정을 하자
+
+> $ vi ansible.cfg
+
+```sh
+[defaults]
+host_key_checking = False
+```
+
+### 다시 명령어를 날려보자
+
 ```Sh
 # ping
 $ ansible all -i hosts/admin -m ping -u deploy -f 30
@@ -143,14 +159,12 @@ $ ansible all -i hosts/admin -m setup -a "filter=ansible_distribution_*" -u depl
 
 -u deploy 은 매번 적기 귀찮으니 기본으로 설정되도록 ansible.cfg 에 설정한다.
 
-```bash
-$ vi ansible.cfg
-```
+> $ vi ansible.cfg
 
 ```Sh
 [defaults]
-forks = 50 
 host_key_checking = False
+forks = 50
 remote_user = deploy
 remote_port = 22
 ```

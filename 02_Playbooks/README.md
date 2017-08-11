@@ -364,8 +364,8 @@ $ ansible-playbook playbooks/touch_files.yml -i hosts/admin
         state: directory
         
     - stat:
-        path: "{{touch_files_path}}/jacob.txt"
-       register: result
+        path: "{{touch_files_path}}/{{id}}.txt"
+      register: result
     
     - name: touch file
       file:
@@ -448,7 +448,7 @@ roles/
 > main.yml 은 index.html 같은 개념
 
 ```Sh
-$ mkdir -p roles/touch_files/tasks/main.yml
+$ mkdir -p roles/touch_files/tasks
 ```
 
 > vi roles/touch_files/tasks/main.yml
@@ -635,7 +635,8 @@ http://docs.ansible.com/ansible/latest/template_module.html
 디렉토리 생성
 
 ```Sh
-$ mkdir -p roles/test_templates/tasks
+$ mkdir -p roles/test_templates
+$ cd roles/test_templates
 $ mkdir tasks templates vars
 ```
 
