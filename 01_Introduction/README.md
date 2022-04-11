@@ -68,7 +68,7 @@
 
 
 
-## 타 대표 제품과의 비교
+## 타 제품과의 비교
 
 ![비교](../images/ansible-chef-puppet.png)
 
@@ -88,14 +88,24 @@ $ sudo apt-get ansible # Ubuntu
 
 ## 환경 파일
 
-ansible 프로젝트 홈 밑에 아래 이름으로 생성하면 알아서 읽어드림  
-옵션 참조 : http://docs.ansible.com/ansible/intro_configuration.html
+### 적용 방법 및 우선순위
+아래와 같은 여러 방법이 있음. 우선순위는 위에서 아래로
+*  ANSIBLE_CONFIG
+*  ansible.cfg
+*  ~/.ansible.cfg
+*  /etc/ansible/ansible.cfg
 
-```sh
-$ANSIBLE_HOME/ansible.cfg
-$ANSIBLE_HOME/.ansible.cfg
-```
+### 파일 타입
+- INI
 
+- 주석: `#`, `;`
+
+-  e.g) 
+  
+  ```ini
+    # some basic default values...
+    inventory = /etc/ansible/hosts  ; This points to the file that lists your hosts
+  ```
 
 
 
@@ -169,8 +179,8 @@ remote_user = deploy
 remote_port = 22
 ```
 
-- forks :  병렬 처리 시 프로세스 개수 (default가 5였으나 최근엔 30으로 변경됨)
-- host_key_checking: ssh 첫 접속 시 yes/no 출력 무시
+- `forks` :  병렬 처리 시 프로세스 개수 (default: 5)
+- `host_key_checking`: ssh 첫 접속 시 yes/no 출력 무시
 
 
 
@@ -199,9 +209,9 @@ $ ansible all -i hosts/first -l "ansible-test-web0[1-2]" -m ping
 
 
 
-## 인벤토리
+## Inventory
 
-### 호스트와 그룹
+### Host and Group
 
 일반적인 형태
 
@@ -255,6 +265,21 @@ host2 http_port=303 maxRequestsPerChild=909
 이해하기 쉽게 우리나라 지역 한글명으로 설명한다.
 
 ```
+[대한민국:children]
+전라도
+경상도
+경기도
+
+[전라도:vars]
+some_server=foo.southeast.example.com
+halon_system_timeout=30
+self_destruct_countdown=60
+escape_pods=2
+
+[전라도:children]
+전라남도
+전라북도
+
 [전라남도]
 목포
 순천
@@ -263,22 +288,9 @@ host2 http_port=303 maxRequestsPerChild=909
 전주
 정읍
 
-[전라도:children]
-전라남도
-전라북도
-
-[전라도:vars]
-some_server=foo.southeast.example.com
-halon_system_timeout=30
-self_destruct_countdown=60
-escape_pods=2
-
 ...(중략)...
 
-[대한민국:children]
-전라도
-경상도
-경기도
+
 ```
 
 그렇다면 이런식으로 실행을 할 것이다.
@@ -312,9 +324,9 @@ ansible all -i hosts/web -l "alpha,sandbox" -m copy -a "src=/etc/hosts dest=/tmp
 
 
 
-## 실행 예
+## 실행 예 (Playbook 을 사용하지 않을 경우)
 
-모듈 종류 : http://docs.ansible.com/ansible/latest/list_of_all_modules.html
+모듈 종류 : https://docs.ansible.com/ansible/latest/collections/all_plugins.html
 
 ``` sh
 # Copy
